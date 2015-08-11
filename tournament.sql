@@ -12,18 +12,22 @@ CREATE DATABASE tournament;
 \c tournament
 
 -- table and view creation for database
+-- removed P_id as primary key per first submission
+-- naming convention of table in lowercase in both players table and matches table
 
-CREATE TABLE Players(
-	P_id serial PRIMARY KEY,
-	player_name varchar(75)
+CREATE TABLE players(
+	id serial PRIMARY KEY,   
+        player_name varchar(75)
 	);
 
-CREATE TABLE Matches(
+-- changed column names to be more descriptive in table
+
+CREATE TABLE matches(
 	M_id serial PRIMARY KEY,
-	p1 integer REFERENCES Players(P_id),
-        p2 integer REFERENCES Players(P_id),
-        p1_res integer,
-        p2_res integer
+	winner integer REFERENCES Players(id),
+        loser integer REFERENCES Players(id),
+        winner_score integer,
+        loser_score integer
 	);
 
 -- Shows match count by player
@@ -31,32 +35,32 @@ CREATE TABLE Matches(
 CREATE VIEW matches_by_player AS
     SELECT
         M_id,
-        p1 as player,
-        p2 as opponent,
-        p1_res as points
+        winner as player,
+        loser as opponent,
+        winner_score as points
     FROM
-        Matches
+        matches
     UNION
     SELECT
         M_id,
-        p2 as player,
-        p1 as opponent,
-        p2_res as points
+        loser as player,
+        winner as opponent,
+        loser_score as points
     FROM
-        Matches
+        matches
     ORDER BY
         M_id;
 
 CREATE VIEW PlayerPoint as
     SELECT
-        P_id as id,
+        id as id,
         player_name as name,
         sum(points) as points,
         count(points) as matches
     FROM Players
     LEFT JOIN matches_by_player
-    ON P_id = player
-    GROUP BY P_id
+    ON id = player
+    GROUP BY id
     ORDER BY id;
 
 -- Player points and opponent match points
@@ -79,4 +83,3 @@ CREATE VIEW CumPoints AS
          ON POMP1.opponent = opp_list.opponent
     GROUP BY player
     ORDER BY player;
- 
