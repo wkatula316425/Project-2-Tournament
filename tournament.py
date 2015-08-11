@@ -14,7 +14,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     db = connect()
     c= db.cursor()
-    c.execute("DELETE FROM Matches") # tried truncate table error messages saying that references already existed
+    c.execute("DELETE FROM matches") # tried truncate table error messages saying that references already existed
     db.commit()
     db.close()
 
@@ -22,7 +22,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     db = connect()
     c= db.cursor()
-    c.execute("DELETE FROM Players") # tried truncate table but kept getting error mesages
+    c.execute("DELETE FROM players") # tried truncate table but kept getting error mesages
     db.commit()
     db.close()
 
@@ -30,7 +30,7 @@ def countPlayers():
     """Returns the number of players currently registered."""
     db = connect()
     c= db.cursor()
-    c.execute("SELECT count(*) FROM Players;")
+    c.execute("SELECT count(*) FROM players;")
     count = c.fetchone()
     db.close()
     return count[0]
@@ -48,7 +48,7 @@ def registerPlayer(name):
     """
     db = connect()
     c = db.cursor()
-    c.execute("INSERT INTO Players(player_name) VALUES (%s)", (name,))
+    c.execute("INSERT INTO players(player_name) VALUES (%s)", (name,))
     db.commit()
     db.close();
 
@@ -99,7 +99,7 @@ def reportMatch(winner, loser):
     """
     db = connect()
     c = db.cursor()
-    c.execute("INSERT INTO Matches (p1, p2, p1_res, p2_res) VALUES (%s,%s,1,0)", (winner, loser))
+    c.execute("INSERT INTO matches (winner, loser, winner_score, loser_score) VALUES (%s,%s,1,0)", (winner, loser))
     db.commit()
     db.close()
  
@@ -130,3 +130,6 @@ def swissPairings():
         
     return [(p1[0], p1[1], p2[0], p2[1]) for p1, p2 in zip(standings[::2], standings[1::2])]
             
+
+ 
+ 
